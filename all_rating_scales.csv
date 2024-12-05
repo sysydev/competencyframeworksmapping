@@ -1,0 +1,16 @@
+rating scales,level,rating score
+Dreyfus Scale,1,"★☆☆☆☆ - Novice - Possesses textbook knowledge, able to execute tasks under micro-management."
+Dreyfus Scale,2,★★☆☆☆ - Advanced beginner - Able to solve series of tasks under limited supervision.
+Dreyfus Scale,3,★★★☆☆ - Competent - Able to solve business problems autonomously.
+Dreyfus Scale,4,★★★★☆ - Proficient - Fully responsible and able to manage complexity.
+Dreyfus Scale,5,"★★★★★ - Expert - Able to teach and coach, authoritative inside and outside the company."
+Culture Fit Scale,1,★☆☆☆☆ - Resistor - Rarely aligns with or supports the organization’s core values and may exhibit behaviors that undermine the culture.
+Culture Fit Scale,2,★★☆☆☆ - Observer - Passively follows cultural norms but does not actively contribute to or support the organization’s values.
+Culture Fit Scale,3,★★★☆☆ - Participant - Aligns with the organization’s values and contributes to the culture in a consistent but passive manner.
+Culture Fit Scale,4,"★★★★☆ - Promoter - Actively advocates for and supports the organization's core values, fostering cultural alignment in peers and teams."
+Culture Fit Scale,5,"★★★★★ - Role Model - Consistently exemplifies the organization’s core values and sets a standard for cultural alignment, inspiring others to follow."
+Performance-Based Rating Scale,1,★☆☆☆☆ - Needs Significant Improvement - Performance is well below expectations and requires immediate and significant enhancement.
+Performance-Based Rating Scale,2,★★☆☆☆ - Needs Improvement - Performance occasionally meets expectations but lacks consistency and needs development.
+Performance-Based Rating Scale,3,★★★☆☆ - Meets Expectations - Consistently meets expectations and performs reliably in assigned tasks.
+Performance-Based Rating Scale,4,"★★★★☆ - Exceeds Expectations - Regularly exceeds expectations, delivering high-quality work and contributing beyond assigned responsibilities."
+Performance-Based Rating Scale,5,"★★★★★ - Outstanding - Consistently exceeds expectations in all areas, demonstrating exceptional quality and leadership."

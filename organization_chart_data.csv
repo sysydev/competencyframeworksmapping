@@ -1,0 +1,19 @@
+name,title,manager
+Jane Doe,Director,
+John Smith,Finance Manager,Jane Doe
+Emily Davis,HR Manager,Jane Doe
+Michael Brown,IT Manager,Jane Doe
+Sophia Johnson,Marketing Manager,Jane Doe
+Liam Wilson,Operations Manager,Jane Doe
+Emma Garcia,Sales Manager,Jane Doe
+Oliver Martinez,Assistant Finance Manager,John Smith
+Ava Lee,Recruitment Specialist,Emily Davis
+Isabella Lopez,Training Specialist,Emily Davis
+Noah Taylor,System Administrator,Michael Brown
+Ethan Thomas,Network Specialist,Michael Brown
+Charlotte White,Content Strategist,Sophia Johnson
+Amelia Clark,Graphic Designer,Sophia Johnson
+James King,Logistics Specialist,Liam Wilson
+Lucas Adams,Production Supervisor,Liam Wilson
+Mia Scott,Account Manager,Emma Garcia
+Harper Lewis,Sales Associate,Emma Garcia
