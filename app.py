@@ -1,8 +1,24 @@
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env
+load_dotenv()
+
+# Confirm the API Key is loaded
+api_key = os.getenv('SENDGRID_API_KEY')
+if not api_key:
+    print("SendGrid API Key not found. Please check your .env file.")
+else:
+    print("SendGrid API Key successfully loaded.")
+
+# Other imports
 import pandas as pd
 import dash
 from dash import html, dcc, Input, Output, State
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 # Load the data
 framework_data = pd.read_csv('all_competency_framework.csv')
@@ -37,11 +53,33 @@ framework_options = framework_data['framework'].unique()
 rating_scale_options = rating_scales_data['rating scales'].unique()
 position_options = competency_data['position'].unique()
 
+# Helper function to send email
+def send_email(first_name, last_name, position, organization, assessment_type):
+    try:
+        email_subject = f"New 360 Assessment Request: {assessment_type}"
+        email_content = (
+            f"New 360 Assessment Request\n\n"
+            f"Name: {first_name} {last_name}\n"
+            f"Position: {position}\n"
+            f"Organization: {organization}\n"
+            f"Assessment Type: {assessment_type}"
+        )
+        message = Mail(
+            from_email="no-reply@huneety.com",
+            to_emails="contact@huneety.com",
+            subject=email_subject,
+            plain_text_content=email_content
+        )
+        sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
+        sg.send(message)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
 # Function to create the organization chart
 def create_organization_chart(data):
     data['manager'] = data['manager'].fillna('')  # Replace NaN with empty strings for managers
     data['label'] = data['name'] + " (" + data['title'] + ")"  # Combine name and title
-    
+
     labels = data['label'].tolist()
     parents = data['manager'].apply(lambda x: data.loc[data['name'] == x, 'label'].values[0] if x in data['name'].values else '').tolist()
 
@@ -252,6 +290,8 @@ app.layout = html.Div([
             dcc.Input(id="first-name", type="text", placeholder="First Name", style={"marginBottom": "10px", "width": "100%"}),
             html.Label("Last Name"),
             dcc.Input(id="last-name", type="text", placeholder="Last Name", style={"marginBottom": "10px", "width": "100%"}),
+            html.Label("Email Address"),  # New email field
+            dcc.Input(id="email-address", type="email", placeholder="Email Address", style={"marginBottom": "10px", "width": "100%"}),  # Add type email for validation
             html.Label("Position"),
             dcc.Input(id="position", type="text", placeholder="Position", style={"marginBottom": "10px", "width": "100%"}),
             html.Label("Organization"),
@@ -281,7 +321,7 @@ app.layout = html.Div([
         html.Div([
             html.A(
                 dbc.Button("Schedule a Meeting to Discuss Your Project", color="primary"),
-                href="mailto:simon@huneety.com",
+                href="https://calendly.com/simon-huneety",
                 style={"textAlign": "center", "width": "100%"}
             )
         ])
@@ -320,7 +360,6 @@ def update_visualizations(selected_position):
 
     return spider_chart, competency_list
 
-
 @app.callback(
     Output("assessment-result", "children"),
     [Input("assessment-dropdown", "value")]
@@ -340,20 +379,42 @@ def toggle_form(selected_assessment):
         return {"width": "50%", "margin": "0 auto", "display": "block"}
     return {"width": "50%", "margin": "0 auto", "display": "none"}
 
-
 @app.callback(
     Output("submit-button", "children"),
     [Input("submit-button", "n_clicks")],
     [State("first-name", "value"),
      State("last-name", "value"),
+     State("email-address", "value"),  # Include email field for internal record
      State("position", "value"),
      State("organization", "value"),
      State("assessment-dropdown", "value")]
 )
-def submit_form(n_clicks, first_name, last_name, position, organization, assessment_type):
+def submit_form(n_clicks, first_name, last_name, email_address, position, organization, assessment_type):
     if n_clicks:
-        return f"Form submitted for {first_name} {last_name} requesting {assessment_type} template!"
+        try:
+            # Send email notification using SendGrid
+            message = Mail(
+                from_email="contact@huneety.com",  # Sender email
+                to_emails="contact@huneety.com",  # Internal recipient email
+                subject=f"New Assessment Request - {assessment_type}",
+                html_content=f"""
+                    <p><strong>Assessment Type:</strong> {assessment_type}</p>
+                    <p><strong>First Name:</strong> {first_name}</p>
+                    <p><strong>Last Name:</strong> {last_name}</p>
+                    <p><strong>Email Address:</strong> {email_address}</p>
+                    <p><strong>Position:</strong> {position}</p>
+                    <p><strong>Organization:</strong> {organization}</p>
+                """
+            )
+            sg = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))  # Ensure the key is correctly set in your .env file
+            sg.send(message)
+
+            return "Thank you! Your request has been submitted successfully. You will receive an email shortly."
+        except Exception as e:
+            print(f"An error occurred while sending the email: {e}")
+            return "An error occurred while processing your request. Please try again later."
     return "Submit"
+
 # Run the app
 if __name__ == "__main__":
     app.run_server(debug=False, host="0.0.0.0", port=8050)
